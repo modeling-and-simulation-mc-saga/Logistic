@@ -21,11 +21,10 @@ public class PrintOrbit extends AbstractAnalysis {
 //        double lambda = (1+2*Math.sqrt(2))/4-0.001;
 //        double lambda = 0.961;
         double lambda = 0.864;
-        //double lambda=0.8;
         PrintOrbit sys = new PrintOrbit(lambda);
         double initX = .1;
         int numIteration = 40;
-        int period = 4;
+        int period = 1;
         sys.doExec(initX, numIteration, period);
         System.err.println(sys.getError());
     }
@@ -89,8 +88,7 @@ public class PrintOrbit extends AbstractAnalysis {
             "set ytic 0.5",
             "set border lw 3",
             "set xlabel \"{/:Italic x_n}\"",
-            "set ylabel \"{/:Italic x}"
-            + "_{{/:Italic n}+1}}\"",
+            "set ylabel \"{/:Italic x}_{{/:Italic n}+1}\"",
             "a=4*" + lambda,
             "f(x) = a*x*(1-x)",
             "set output \"" + filename + "\"",
