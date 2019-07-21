@@ -1,17 +1,17 @@
-package model;
+package analysis;
 
 import java.awt.geom.Point2D;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.List;
-import utils.Gnuplot;
+import model.Logistic;
 
 /**
  * Show orbits
  *
  * @author tadaki
  */
-public class PrintOrbit {
+public class PrintOrbit extends AbstractAnalysis {
 
     /**
      * @param args the command line arguments
@@ -27,9 +27,8 @@ public class PrintOrbit {
         int numIteration = 40;
         int period = 4;
         sys.doExec(initX, numIteration, period);
+        System.err.println(sys.getError());
     }
-
-    private final double lambda;
 
     /**
      * Constructor
@@ -38,7 +37,7 @@ public class PrintOrbit {
      * @throws IOException
      */
     public PrintOrbit(double lambda) throws IOException {
-        this.lambda = lambda;
+        super(lambda);
     }
 
     /**
@@ -54,7 +53,6 @@ public class PrintOrbit {
         Logistic logistic = new Logistic(lambda);
         List<Point2D.Double> pList = logistic.evalOrbit(initX, numIteration);
         String gnuplotCommandsLines[] = gnuplotCommands(period);
-        Gnuplot gnuplot = new Gnuplot(".");
 
         try (BufferedWriter outG = gnuplot.getWriter()) {
             for (String s : gnuplotCommandsLines) {

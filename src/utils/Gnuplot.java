@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import myLib.FileIO;
 
@@ -16,6 +17,7 @@ public class Gnuplot {
     public static final String nl = System.getProperty("line.separator");
     private Process process;
     private final BufferedWriter out;
+    private final BufferedReader err;
 
     public Gnuplot() throws IOException {
         this(".");
@@ -23,6 +25,8 @@ public class Gnuplot {
 
     public Gnuplot(String dir) throws IOException {
         out = openGnuplot(dir);
+        err = new BufferedReader(
+                new InputStreamReader(process.getErrorStream()));
     }
 
     /**
@@ -70,6 +74,10 @@ public class Gnuplot {
 
     public BufferedWriter getWriter() {
         return out;
+    }
+
+    public BufferedReader getError() {
+        return err;
     }
 
     public void close() throws IOException {

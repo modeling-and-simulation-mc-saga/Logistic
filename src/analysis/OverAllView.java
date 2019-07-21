@@ -1,21 +1,22 @@
-package model;
+package analysis;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import utils.Gnuplot;
+import model.Logistic;
 
 /**
  *
  * @author tadaki
  */
-public class OverAllView {
+public class OverAllView extends AbstractAnalysis{
 
     public static void main(String args[]) throws IOException {
         double fromLambda = 0.7;
         OverAllView sys = new OverAllView();
         sys.doExec(fromLambda, 1.);
+        System.err.println(sys.getError());
     }
 
     private boolean showSuperStableLines = false;
@@ -23,7 +24,7 @@ public class OverAllView {
     private final int numUpdate = 100;
 
     public OverAllView() throws IOException {
-
+        super(0.);
     }
 
     public void doExec(double fromLambda) throws IOException {
@@ -32,7 +33,6 @@ public class OverAllView {
 
     public void doExec(double fromLambda, double toLambda) throws IOException {
         String commands[] = gnuplotCommands(fromLambda, toLambda);
-        Gnuplot gnuplot = new Gnuplot(".");
         try (BufferedWriter outG = gnuplot.getWriter()) {
             for (String s : commands) {
                 outG.write(s);

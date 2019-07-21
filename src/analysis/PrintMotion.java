@@ -1,16 +1,18 @@
-package model;
+package analysis;
+
+
 
 import java.awt.geom.Point2D;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.List;
-import utils.Gnuplot;
+import model.Logistic;
 
 /**
  *
  * @author tadaki
  */
-public class PrintMotion {
+public class PrintMotion extends AbstractAnalysis {
 
     /**
      * @param args the command line arguments
@@ -24,15 +26,15 @@ public class PrintMotion {
         int numIteration = 5;
         int numUpdate = 60;
         sys.doExec(numIteration, numUpdate);
+        System.err.println(sys.getError());
     }
 
     private final boolean chaos;
-    private final double lambda;
     private final Logistic logistic;
 
     public PrintMotion(boolean chaos, double lambda) throws IOException {
+        super(lambda);
         this.chaos = chaos;
-        this.lambda = lambda;
         logistic = new Logistic(lambda);
     }
 
@@ -48,7 +50,6 @@ public class PrintMotion {
         }
 
         String commands[] = gnuplotCommands();
-        Gnuplot gnuplot = new Gnuplot(".");
         try (BufferedWriter outG = gnuplot.getWriter()) {
             for (String s : commands) {
                 outG.write(s);

@@ -1,16 +1,16 @@
-package model;
+package analysis;
 
 import java.awt.geom.Point2D;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.List;
-import utils.Gnuplot;
+import model.Logistic;
 
 /**
  *
  * @author tadaki
  */
-public class Band {
+public class Band extends AbstractAnalysis{
 
     /**
      * @param args the command line arguments
@@ -22,13 +22,13 @@ public class Band {
         Band sys = new Band(lambda);
         int numUpdate = 50;
         sys.doExec(numUpdate);
+        System.err.println(sys.getError());
     }
 
-    private final double lambda;
     private final Logistic logistic;
 
-    public Band(double lambda) {
-        this.lambda = lambda;
+    public Band(double lambda) throws IOException {
+        super(lambda);
         logistic = new Logistic(lambda);
         for (int t = 0; t < 100; t++) {
             logistic.update();
@@ -43,8 +43,8 @@ public class Band {
             y[i] = x;
         }
         y[0] = 0.5;
-        List<Point2D.Double> pList = logistic.evalOrbit(logistic.getX(), numUpdate);
-        Gnuplot gnuplot = new Gnuplot(".");
+        List<Point2D.Double> pList = 
+                logistic.evalOrbit(logistic.getX(), numUpdate);
         String commands[] = gnuplotCommands(y);
         try (BufferedWriter outG = gnuplot.getWriter()) {
             for (String s : commands) {

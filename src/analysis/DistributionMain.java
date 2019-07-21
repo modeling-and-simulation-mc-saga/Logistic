@@ -6,13 +6,12 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.List;
 import model.Logistic;
-import utils.Gnuplot;
 
 /**
  *
  * @author tadaki
  */
-public class DistributionMain {
+public class DistributionMain extends AbstractAnalysis{
 
     /**
      * @param args the command line arguments
@@ -28,11 +27,11 @@ public class DistributionMain {
         sys.doExec(tmax, numBin);
     }
 
-    private final double lambda;
     private final Logistic sys;
 
-    public DistributionMain(double lambda, double initX, int tRelax) {
-        this.lambda = lambda;
+    public DistributionMain(double lambda, double initX, int tRelax) 
+            throws IOException {
+        super(lambda);
         sys = new Logistic(lambda, initX);
         sys.initialize();
         for (int t = 0; t < tRelax; t++) {//緩和
@@ -42,7 +41,6 @@ public class DistributionMain {
 
     public void doExec(int tmax, int numBin) throws IOException {
         List<Point2D.Double> plist = generateHistogram(tmax, numBin);
-        Gnuplot gnuplot = new Gnuplot(".");
         String commands[] = gnuplotCommands();
         try (BufferedWriter outG = gnuplot.getWriter()) {
             for (String s : commands) {
