@@ -6,12 +6,13 @@ import myLib.Utils;
 
 /**
  * Logistic Map
+ *
  * @author tadaki
  */
 public class Logistic {
 
     private double lambda;
-    private final double initX;
+    private double initX;
     private double x;
 
     /**
@@ -59,6 +60,10 @@ public class Logistic {
     }
 
     //***** setters and getters **************
+    public void setInitX(double initX) {
+        this.initX = initX;
+    }
+
     public double getX() {
         return x;
     }
@@ -84,7 +89,7 @@ public class Logistic {
     public List<Point2D.Double> evalOrbit(double initial, int n) {
         List<Point2D.Double> pList = Utils.createList();
         x = initial;
-        pList.add(new Point2D.Double(x,x));
+        pList.add(new Point2D.Double(x, x));
         for (int i = 0; i < n; i++) {
             double xx = x;
             double y = update();
@@ -96,8 +101,9 @@ public class Logistic {
 
     /**
      * 時間変化
+     *
      * @param n
-     * @return 
+     * @return
      */
     public List<Point2D.Double> timeEvolution(int n) {
         return timeEvolution(initX, n);

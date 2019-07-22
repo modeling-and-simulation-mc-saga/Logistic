@@ -18,11 +18,17 @@ public class PrintOrbit extends AbstractAnalysis {
      * @throws java.io.IOException
      */
     public static void main(String args[]) throws IOException {
+        boolean afterRelax=true;
 //        double lambda = (1+2*Math.sqrt(2))/4-0.001;
 //        double lambda = 0.961;
-        double lambda = 0.864;
+//        double lambda = 0.864;
+        double lambda=0.8;
         PrintOrbit sys = new PrintOrbit(lambda);
         double initX = .1;
+        if(afterRelax){
+            sys.relax(100);
+            initX = sys.getX();
+        }
         int numIteration = 40;
         int period = 1;
         sys.doExec(initX, numIteration, period);
@@ -49,7 +55,6 @@ public class PrintOrbit extends AbstractAnalysis {
      */
     public void doExec(double initX, int numIteration, int period)
             throws IOException {
-        Logistic logistic = new Logistic(lambda);
         List<Point2D.Double> pList = logistic.evalOrbit(initX, numIteration);
         String gnuplotCommandsLines[] = gnuplotCommands(period);
 

@@ -30,12 +30,10 @@ public class PrintMotion extends AbstractAnalysis {
     }
 
     private final boolean chaos;
-    private final Logistic logistic;
 
     public PrintMotion(boolean chaos, double lambda) throws IOException {
         super(lambda);
         this.chaos = chaos;
-        logistic = new Logistic(lambda);
     }
 
     public void doExec(int numIteration, int numUpdate) throws IOException {

@@ -20,19 +20,16 @@ public class Band extends AbstractAnalysis{
 //        double lambda = (1+2*Math.sqrt(2))/4-0.001;
         double lambda = 0.9;
         Band sys = new Band(lambda);
+        int numRelax=100;
+        sys.relax(numRelax);
         int numUpdate = 50;
         sys.doExec(numUpdate);
         System.err.println(sys.getError());
     }
 
-    private final Logistic logistic;
 
     public Band(double lambda) throws IOException {
         super(lambda);
-        logistic = new Logistic(lambda);
-        for (int t = 0; t < 100; t++) {
-            logistic.update();
-        }
     }
 
     public void doExec(int numUpdate) throws IOException {
@@ -54,7 +51,7 @@ public class Band extends AbstractAnalysis{
             outG.write("plot \"-\" with line lw 1 notitle,"
                     + "\"-\" with line lt -1 lw 1 notitle,"
                     + "x with line lt 8 lw 1 notitle, "
-                    + "f(x) with line lt -1 lw 1 notitle,"
+                    + "f(x) with line lt -1 lw 1 notitle"
             );
             outG.newLine();
             for (Point2D.Double p : pList) {
@@ -100,7 +97,7 @@ public class Band extends AbstractAnalysis{
             "set border lw 3",
             "set xlabel \"{/:Italic x_n}\"",
             "set ylabel \"{/:Italic x}"
-            + "_{{/:Italic n}+1}}\"",
+            + "_{{/:Italic n}+1}\"",
             "a=4*" + lambda,
             "f(x) = a*x*(1-x)",
             "set output \"" + filename + "\"",
@@ -121,7 +118,6 @@ public class Band extends AbstractAnalysis{
             + y[5] + " fc rgb \"blue\"",
             "set object 8 rect from 0," + y[2] + " to 0.02,"
             + y[4] + " fc rgb \"orange\""
-
         };
         return lines;
     }

@@ -15,6 +15,7 @@ public class OverAllView extends AbstractAnalysis{
     public static void main(String args[]) throws IOException {
         double fromLambda = 0.7;
         OverAllView sys = new OverAllView();
+//        sys.setShowSuperStableLines(true);
         sys.doExec(fromLambda, 1.);
         System.err.println(sys.getError());
     }
@@ -41,7 +42,8 @@ public class OverAllView extends AbstractAnalysis{
             for (int i = 1; i <= numPoints; i++) {
                 double lambda = (toLambda - fromLambda) * i / numPoints
                         + fromLambda;
-                Logistic logistic = new Logistic(lambda);
+                logistic.setLambda(lambda);
+                logistic.initialize();
                 for (int j = 0; j < numPoints; j++) {
                     logistic.update();
                 }

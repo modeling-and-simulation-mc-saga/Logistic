@@ -23,20 +23,16 @@ public class DistributionMain extends AbstractAnalysis{
         double lambda = 0.9;
         double initX = 0.5;
         int numBin = 1000;//ビンの数
-        DistributionMain sys = new DistributionMain(lambda, initX, tRelax);
+        DistributionMain sys = new DistributionMain(lambda, initX);
+        sys.relax(tRelax);
         sys.doExec(tmax, numBin);
     }
-
-    private final Logistic sys;
-
-    public DistributionMain(double lambda, double initX, int tRelax) 
+    
+    public DistributionMain(double lambda, double initX) 
             throws IOException {
         super(lambda);
-        sys = new Logistic(lambda, initX);
-        sys.initialize();
-        for (int t = 0; t < tRelax; t++) {//緩和
-            sys.update();
-        }
+        logistic.setInitX(initX);
+        logistic.initialize();
     }
 
     public void doExec(int tmax, int numBin) throws IOException {
@@ -76,7 +72,7 @@ public class DistributionMain extends AbstractAnalysis{
         //ヒストグラムの定義
         Histogram histogram = new Histogram(0., 1., numBin);
         for (int t = 0; t < tmax; t++) {
-            double x = sys.update();//状態を更新
+            double x = logistic.update();//状態を更新
             histogram.put(x);//ヒストグラムへ登録
         }
         return histogram.getHistogram();
