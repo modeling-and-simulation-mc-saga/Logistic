@@ -2,7 +2,7 @@ package model;
 
 import java.awt.geom.Point2D;
 import java.util.List;
-import myLib.Utils;
+import myLib.utils.Utils;
 
 /**
  * Logistic Map
