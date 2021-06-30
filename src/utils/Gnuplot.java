@@ -16,7 +16,8 @@ import myLib.utils.FileIO;
 public class Gnuplot {
 
     public static final String nl = System.getProperty("line.separator");
-    private static final String GnuplotCommand="/opt/homebrew/bin/gnuplot";
+//    private static final String GnuplotCommand="/opt/homebrew/bin/gnuplot";
+    private static final String GnuplotCommand="C:\\Program Files\\gnuplot\\bin\\gnuplot.exe";
     private Process process;
     private final BufferedWriter out;
     private final BufferedReader err;
