@@ -1,6 +1,6 @@
 package analysis;
 
-import histogram.Histogram;
+import analysis.histogram.Histogram;
 import java.awt.geom.Point2D;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -24,8 +24,14 @@ public class DistributionMain extends AbstractAnalysis{
         double initX = 0.5;
         int numBin = 1000;//ビンの数
         DistributionMain sys = new DistributionMain(lambda, initX);
+        String filename="dist-"+String.valueOf(lambda)+".txt";
+        sys.openOutput(filename);
+        sys.header();
+        sys.header("lambda",lambda);
+        sys.header("numBin",numBin);
         sys.relax(tRelax);
         sys.doExec(tmax, numBin);
+        sys.close();
     }
     
     public DistributionMain(double lambda, double initX) 
@@ -37,34 +43,8 @@ public class DistributionMain extends AbstractAnalysis{
 
     public void doExec(int tmax, int numBin) throws IOException {
         List<Point2D.Double> plist = generateHistogram(tmax, numBin);
-        String commands[] = gnuplotCommands();
-        try (BufferedWriter outG = gnuplot.getWriter()) {
-            for (String s : commands) {
-                outG.write(s);
-                outG.newLine();
-            }
-            double x = 0.5;
-            for (int i = 1; i <= 6; i++) {
-                x = Logistic.map(x, lambda);
-                String s = "set arrow " + i + " from " + x + ",28 to " + x + ",26";
-                outG.write(s);
-                outG.newLine();
-                double xx = x - 0.01;
-                s = "set label \"" + i + "\" at " + xx + ",28.5";
-                outG.write(s);
-                outG.newLine();
-                System.out.println(x);
-            }
-
-            outG.write("plot \"-\" with boxes notitle");
-            outG.newLine();
             for (Point2D.Double p : plist) {
-                outG.write(p.x + " " + p.y);
-                outG.newLine();
-            }
-            outG.write("end");
-            outG.newLine();
-            outG.flush();
+                this.output(p.x, p.y);
         }
     }
 
@@ -76,19 +56,6 @@ public class DistributionMain extends AbstractAnalysis{
             histogram.put(x);//ヒストグラムへ登録
         }
         return histogram.getHistogram();
-    }
-
-    private String[] gnuplotCommands() {
-        String filename = "dist-" + String.valueOf(lambda) + ".pdf";
-        String label = "{/Symbol l}=" + lambda;
-        String lines[] = {
-            "set terminal pdfcairo enhanced color solid "
-            + "size 29cm,21cm font \"Times-New-Roman\" fontscale 0.8",
-            "set xrange [0:1]",
-            "set output \"" + filename + "\"",
-            "set label \"" + label + "\" at 0.2,20"
-        };
-        return lines;
     }
 
 }
