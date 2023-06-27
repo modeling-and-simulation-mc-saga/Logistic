@@ -1,8 +1,9 @@
 package model;
 
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import myLib.utils.Utils;
 
 /**
  * Logistic Map
@@ -87,7 +88,7 @@ public class Logistic {
     }
 
     public List<Point2D.Double> evalOrbit(double initial, int n) {
-        List<Point2D.Double> pList = Utils.createList();
+        List<Point2D.Double> pList = Collections.synchronizedList(new ArrayList<>());
         x = initial;
         pList.add(new Point2D.Double(x, x));
         for (int i = 0; i < n; i++) {
@@ -110,7 +111,7 @@ public class Logistic {
     }
 
     public List<Point2D.Double> timeEvolution(double initial, int n) {
-        List<Point2D.Double> pList = Utils.createList();
+        List<Point2D.Double> pList = Collections.synchronizedList(new ArrayList<>());
         x = initial;
         for (int t = 0; t < n; t++) {
             pList.add(new Point2D.Double(t, x));
