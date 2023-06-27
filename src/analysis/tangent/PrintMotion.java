@@ -2,11 +2,11 @@ package analysis.tangent;
 
 import analysis.*;
 import java.awt.geom.Point2D;
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import model.Logistic;
-import myLib.Utils;
 
 /**
  *
@@ -25,7 +25,6 @@ public class PrintMotion extends AbstractAnalysis {
         int numUpdate = 100;
         sys.relax(100);
         sys.doExec(numIteration, numUpdate);
-        System.err.println(sys.getError());
     }
 
     public PrintMotion(double lambda) throws IOException {
@@ -33,7 +32,7 @@ public class PrintMotion extends AbstractAnalysis {
     }
 
     private List<Point2D.Double> tangentOrbit(double xInit, int numUpdate) {
-        List<Point2D.Double> pList = Utils.createList();
+        List<Point2D.Double> pList = Collections.synchronizedList(new ArrayList<>());
         logistic.setInitX(xInit);
         double x = logistic.getX();
         for (int t = 0; t < numUpdate; t++) {
@@ -48,7 +47,11 @@ public class PrintMotion extends AbstractAnalysis {
 
     public void doExec(int numIteration, int numUpdate) throws IOException {
         double xInit = 0.2;
-        double xInit2 = 0.2001;
+//        double xInit2 = 0.2001;
+        String filename = "PrintMotion-" + String.valueOf(lambda) + ".txt";
+        this.openOutput(filename);
+        this.header();
+        this.header("lambda",lambda);
         List<Point2D.Double> pList = tangentOrbit(xInit, numUpdate);
         double f[] = new double[numIteration];
         f[0] = 0.5;
@@ -56,43 +59,16 @@ public class PrintMotion extends AbstractAnalysis {
             f[i] = Logistic.map(f[i - 1], lambda);
         }
 
-        String commands[] = gnuplotCommands();
-        try (BufferedWriter outG = gnuplot.getWriter()) {
-            for (String s : commands) {
-                outG.write(s);
-                outG.newLine();
-            }
-            outG.write("plot \"-\" with line lw 2 notitle");
-            outG.newLine();
-            outputData(pList, outG);
-            outG.flush();
+            outputData(pList);
+            this.close();
         }
-    }
+    
 
-    private void outputData(List<Point2D.Double> list, BufferedWriter out)
+    private void outputData(List<Point2D.Double> list)
             throws IOException {
         for (Point2D.Double p : list) {
-            out.write(p.x + " " + p.y);
-            out.newLine();
+            this.output(p.x, p.y);
         }
-        out.write("end");
-        out.newLine();
-    }
-
-    private String[] gnuplotCommands() {
-        String label = "{/Symbol l}=" + lambda;
-        String filename = PrintMotion.class.getSimpleName() + "-"
-                + String.valueOf(lambda) + ".pdf";
-        String lines[] = {
-            "set terminal pdfcairo enhanced color solid "
-            + "size 29cm,21cm font \"Times-New-Roman\" fontscale 0.8",
-            "set yrange [0:1]",
-            "set xlabel \"{/:Italic t}\"",
-            "set ylabel \"{/:Italic x}\"",
-            "set output \"" + filename + "\"",
-            "set label \"" + label + "\" at 20,0.1 "
-        };
-        return lines;
     }
 
 }
